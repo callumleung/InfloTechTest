@@ -1,3 +1,4 @@
+using System;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
@@ -45,7 +46,7 @@ public class UserControllerTests
     {
         // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
         var controller = CreateController();
-        var users = SetupUsers("Johnny", "User", "juser@example.com", false);
+        var users = SetupUsers("Johnny", "User", "juser@example.com", false, default);
 
         // Act: Invokes the method under test with the arranged parameters.
         var result = controller.List(true);
@@ -56,7 +57,7 @@ public class UserControllerTests
             .Which.Items.Should().BeEquivalentTo(users);
     }
 
-    private User[] SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true)
+    private User[] SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true, DateTime dateOfBirth = default)
     {
         var users = new[]
         {
@@ -65,7 +66,8 @@ public class UserControllerTests
                 Forename = forename,
                 Surname = surname,
                 Email = email,
-                IsActive = isActive
+                IsActive = isActive,
+                DateOfBirth = dateOfBirth
             }
         };
 
