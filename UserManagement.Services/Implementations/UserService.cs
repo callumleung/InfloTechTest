@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UserManagement.Data;
 using UserManagement.Models;
@@ -10,6 +11,8 @@ public class UserService : IUserService
 {
     private readonly IDataContext _dataAccess;
     public UserService(IDataContext dataAccess) => _dataAccess = dataAccess;
+
+    public void AddUser(User user) => _dataAccess.Create<User>(user);
 
     /// <summary>
     /// Return users by active state

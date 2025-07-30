@@ -13,6 +13,7 @@ public class UsersController : Controller
     public UsersController(IUserService userService) => _userService = userService;
 
     [HttpGet]
+    [Route("list")]
     public ViewResult List(Boolean? active)
     {
         IEnumerable<User> items = active != null ? _userService.FilterByActive((bool) active) : _userService.GetAll();
@@ -33,5 +34,31 @@ public class UsersController : Controller
         };
 
         return View(model);
+
+    }
+
+    [HttpGet]
+    [Route("AddUser")]
+    public ViewResult GetAddUser()
+    {
+        return View("AddUser");
+    }
+
+    [HttpPost]
+    [Route("AddUserViewModel")]
+    public ViewResult AddUser(AddUserViewModel addUser)
+    {
+        var user = new User
+        {
+            Forename = addUser.Forename,
+            Surname = addUser.Surname,
+            Email = addUser.Email,
+            IsActive = true,
+            DateOfBirth = addUser.DateOfBirth
+        };
+
+
+        _userService.AddUser(user);
+        return View(new AddUserViewModel());
     }
 }

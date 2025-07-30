@@ -1,0 +1,36 @@
+﻿@model UserManagement.Web.Models.Users.AddUserViewModel
+
+<h2>Add New User</h2>
+<form asp-controller="Users" asp-action="AddUserViewModel" method="post">
+    <div>
+        <label>
+            Forename:
+            <input asp-for="Forename" value="" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Surname
+            <input asp-for="Surname" value="" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Email:
+            <input asp-for="Email" value="" />
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Date of Birth:
+            <input asp-for="DateOfBirth" value="" />
+        </label>
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
