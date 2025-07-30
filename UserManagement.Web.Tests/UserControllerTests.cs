@@ -15,7 +15,40 @@ public class UserControllerTests
         var users = SetupUsers();
 
         // Act: Invokes the method under test with the arranged parameters.
-        var result = controller.List();
+        var result = controller.List(null);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Model
+            .Should().BeOfType<UserListViewModel>()
+            .Which.Items.Should().BeEquivalentTo(users);
+    }
+
+    [Fact]
+    public void List_WhenServiceReturnsActiveUsers_ModelMustContainOnlyActiveUsers()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var users = SetupUsers();
+
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = controller.List(true);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Model
+            .Should().BeOfType<UserListViewModel>()
+            .Which.Items.Should().BeEquivalentTo(users);
+    }
+
+    [Fact]
+    public void List_WhenServiceReturnsNonActiveUsers_ModelMustContainOnlyNonActiveUsers()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var users = SetupUsers("Johnny", "User", "juser@example.com", false);
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
         result.Model
@@ -38,6 +71,10 @@ public class UserControllerTests
 
         _userService
             .Setup(s => s.GetAll())
+            .Returns(users);
+
+        _userService
+            .Setup(s => s.FilterByActive(It.IsAny<bool>()))
             .Returns(users);
 
         return users;
