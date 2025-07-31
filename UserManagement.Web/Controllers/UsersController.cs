@@ -57,8 +57,25 @@ public class UsersController : Controller
             DateOfBirth = addUser.DateOfBirth
         };
 
-
         _userService.AddUser(user);
         return View(new AddUserViewModel());
+    }
+
+    [HttpGet]
+    [Route("User")]
+    public ViewResult ViewUser(long userId)
+    {
+        var user = _userService.GetUser(userId);
+        var result = user.Select(p => new UserListItemViewModel
+        {
+            Id = p.Id,
+            Forename = p.Forename,
+            Surname = p.Surname,
+            Email = p.Email,
+            IsActive = p.IsActive,
+            DateOfBirth = p.DateOfBirth.ToShortDateString()
+        }).FirstOrDefault(new UserListItemViewModel());
+
+        return View(result);
     }
 }

@@ -22,4 +22,5 @@ public class UserService : IUserService
     public IEnumerable<User> FilterByActive(bool isActive) => _dataAccess.GetAll<User>().Where(user => user.IsActive == isActive);
 
     public IEnumerable<User> GetAll() => _dataAccess.GetAll<User>();
+    public IEnumerable<User> GetUser(long id) => _dataAccess.GetAll<User>().Where(user => user.Id == id);
 }
