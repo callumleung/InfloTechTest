@@ -20,7 +20,7 @@ public class UserControllerTests
         var result = controller.List(null);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
@@ -45,7 +45,7 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
@@ -70,7 +70,7 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
