@@ -19,9 +19,18 @@ public class UserControllerTests
         var result = controller.List(null);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
+        var usersOutput = users.Select(u => new UserListItemViewModel
+        {
+            Id = u.Id,
+            Forename = u.Forename,
+            Surname = u.Surname,
+            Email = u.Email,
+            IsActive = u.IsActive,
+            DateOfBirth = u.DateOfBirth.ToShortDateString()
+        }).ToList();
         result.Model
             .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(users);
+            .Which.Items.Should().BeEquivalentTo(usersOutput);
     }
 
     [Fact]
@@ -36,9 +45,18 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
+        var usersOutput = users.Select(u => new UserListItemViewModel
+        {
+            Id = u.Id,
+            Forename = u.Forename,
+            Surname = u.Surname,
+            Email = u.Email,
+            IsActive = u.IsActive,
+            DateOfBirth = u.DateOfBirth.ToShortDateString()
+        }).ToList();
         result.Model
             .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(users);
+            .Which.Items.Should().BeEquivalentTo(usersOutput);
     }
 
     [Fact]
@@ -52,9 +70,18 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
+        var usersOutput = users.Select(u => new UserListItemViewModel
+        {
+            Id = u.Id,
+            Forename = u.Forename,
+            Surname = u.Surname,
+            Email = u.Email,
+            IsActive = u.IsActive,
+            DateOfBirth = u.DateOfBirth.ToShortDateString()
+        }).ToList();
         result.Model
             .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(users);
+            .Which.Items.Should().BeEquivalentTo(usersOutput);
     }
 
     private User[] SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true, DateTime dateOfBirth = default)
