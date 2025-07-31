@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UserManagement.Models;
 
 namespace UserManagement.Services.Domain.Interfaces;
@@ -13,5 +14,6 @@ public interface IUserService
     /// <returns></returns>
     IEnumerable<User> FilterByActive(bool isActive);
     IEnumerable<User> GetAll();
+    IEnumerable<User> GetUser(long id);
     void AddUser(User user);
 }
