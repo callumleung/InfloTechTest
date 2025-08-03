@@ -1,6 +1,6 @@
 ﻿@model UserManagement.Web.Models.Users.UserViewModel
 
-<h2>View User</h2>
+<h2>Are you sure you want to delete user:</h2>
 
 <div>
     <label>
@@ -38,4 +38,8 @@
         Date of Birth: <a>@Model.DateOfBirth</a>
     </label>
 </div>
-
+<form asp-controller="Users" asp-action="DeleteUser" asp-route-userId="@Model.Id" method="post">
+    <div>
+        <button type="submit">Delete</button>
+    </div>
+</form>

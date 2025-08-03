@@ -20,7 +20,7 @@ public class UserControllerTests
         var result = controller.List(null);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
@@ -45,7 +45,7 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
@@ -70,7 +70,7 @@ public class UserControllerTests
         var result = controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserListItemViewModel
+        var usersOutput = users.Select(u => new UserViewModel
         {
             Id = u.Id,
             Forename = u.Forename,
@@ -107,7 +107,18 @@ public class UserControllerTests
             u.Email == addUser.Email &&
             u.IsActive &&
             u.DateOfBirth == addUser.DateOfBirth)), Times.Once);
+    }
 
+    [Fact]
+    public void DeleteUser_WhenCalled_shouldCallService()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var user = SetupUsers()[0];
+        // Act: Invokes the method under test with the arranged parameters.
+        controller.DeleteUser(user.Id);
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        _userService.Verify(s => s.DeleteUser(It.IsAny<User>()), Times.Once);
     }
 
     private User[] SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true, DateTime dateOfBirth = default)
@@ -131,6 +142,9 @@ public class UserControllerTests
         _userService
             .Setup(s => s.FilterByActive(It.IsAny<bool>()))
             .Returns(users);
+
+        _userService
+            .Setup(s => s.DeleteUser(It.IsAny<User>()));
 
         return users;
     }

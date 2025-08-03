@@ -13,6 +13,7 @@ public class UserService : IUserService
     public UserService(IDataContext dataAccess) => _dataAccess = dataAccess;
 
     public void AddUser(User user) => _dataAccess.Create<User>(user);
+    public void DeleteUser(User user) => _dataAccess.Delete<User>(user);
 
     /// <summary>
     /// Return users by active state
@@ -22,5 +23,6 @@ public class UserService : IUserService
     public IEnumerable<User> FilterByActive(bool isActive) => _dataAccess.GetAll<User>().Where(user => user.IsActive == isActive);
 
     public IEnumerable<User> GetAll() => _dataAccess.GetAll<User>();
-    public IEnumerable<User> GetUser(long id) => _dataAccess.GetAll<User>().Where(user => user.Id == id);
+    public User GetUser(long id) => _dataAccess.GetAll<User>().Where(user => user.Id == id).Single();
+    public void UpdateUser(User user) => _dataAccess.Update<User>(user);
 }

@@ -18,7 +18,7 @@ public class UsersController : Controller
     {
         IEnumerable<User> items = active != null ? _userService.FilterByActive((bool) active) : _userService.GetAll();
 
-        var results = items.Select(p => new UserListItemViewModel
+        var results = items.Select(p => new UserViewModel
         {
             Id = p.Id,
             Forename = p.Forename,
@@ -34,7 +34,6 @@ public class UsersController : Controller
         };
 
         return View(model);
-
     }
 
     [HttpGet]
@@ -46,7 +45,7 @@ public class UsersController : Controller
 
     [HttpPost]
     [Route("AddUserViewModel")]
-    public ViewResult AddUser(AddUserViewModel addUser)
+    public IActionResult AddUser(AddUserViewModel addUser)
     {
         var user = new User
         {
@@ -58,24 +57,70 @@ public class UsersController : Controller
         };
 
         _userService.AddUser(user);
-        return View(new AddUserViewModel());
+        return RedirectToAction("list");
     }
 
     [HttpGet]
     [Route("User")]
     public ViewResult ViewUser(long userId)
     {
-        var user = _userService.GetUser(userId);
-        var result = user.Select(p => new UserListItemViewModel
-        {
-            Id = p.Id,
-            Forename = p.Forename,
-            Surname = p.Surname,
-            Email = p.Email,
-            IsActive = p.IsActive,
-            DateOfBirth = p.DateOfBirth.ToShortDateString()
-        }).FirstOrDefault(new UserListItemViewModel());
+        return View(getUserViewModel(userId));
+    }
 
-        return View(result);
+    [HttpGet]
+    [Route("EditUserView")]
+    public ViewResult EditUser(long userId)
+    {
+        var user = getUserViewModel(userId);
+        return View("EditUser", user);
+    }
+
+    [HttpPost]
+    [Route("EditUser")]
+    public IActionResult EditUser(AddUserViewModel userViewModel, long id)
+    {
+        var user = _userService.GetUser(id);
+
+        user.Forename = userViewModel.Forename;
+        user.Surname = userViewModel.Surname;
+        user.Email = userViewModel.Email;
+        user.DateOfBirth = userViewModel.DateOfBirth;
+        user.IsActive = userViewModel.IsActive;
+
+        _userService.UpdateUser(user);
+        return RedirectToAction("list");
+    }
+
+
+    [HttpGet]
+    [Route("DeleteUserView")]
+    public IActionResult getDeleteUser(long userId)
+    {
+        var user = getUserViewModel(userId);
+        return View("DeleteUser", user);
+    }
+
+
+    [HttpPost]
+    [Route("DeleteUser")]
+    public IActionResult DeleteUser(long userId)
+    {
+        var user = _userService.GetUser(userId);
+        _userService.DeleteUser(user);
+        return RedirectToAction("list");
+    }
+
+    private UserViewModel getUserViewModel(long id)
+    {
+        var user = _userService.GetUser(id);
+        return new UserViewModel
+        {
+            Id = user.Id,
+            Forename = user.Forename,
+            Surname = user.Surname,
+            Email = user.Email,
+            IsActive = user.IsActive,
+            DateOfBirth = user.DateOfBirth.ToShortDateString()
+        };
     }
 }

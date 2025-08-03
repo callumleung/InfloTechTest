@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Implementations;
@@ -20,22 +21,84 @@ public class UserServiceTests
         result.Should().BeSameAs(users);
     }
 
-    private IQueryable<User> SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true)
+    [Fact]
+    public void GetUser_WhenContextReturnsEntity_MustReturnSameEntity()
+    {
+        // Arrange
+        var service = CreateService();
+        var users = SetupUsers();
+
+        // Act
+        var result = service.GetUser(3);
+
+        // Assert
+        result.Should().BeSameAs(users.Last());
+    }
+
+    [Fact]
+    public void AddUser_WhenCalled_ShouldAddUserToContext()
+    {
+        // Arrange
+        var service = CreateService();
+        var users = SetupUsers();
+        var newUser = new User
+        {
+            Forename = "John",
+            Surname = "Doe",
+            Email = "jd@gmail.com",
+            DateOfBirth = new DateTime(1990, 1, 1),
+        };
+
+        _dataContext
+           .Setup(s => s.Create<User>(It.IsAny<User>()))
+           .Callback<User>(u => users = users.Append(newUser));
+
+        // Act
+        service.AddUser(newUser);
+
+        // Assert
+        users.Count().Should().Be(4);
+        users.Contains(newUser).Should().BeTrue();
+    }
+
+    [Fact]
+    public void UpdateUser_WhenCalled_ShouldUpdateUserInContext()
+    {
+        // Arrange
+        var service = CreateService();
+        var users = SetupUsers();
+        var userToUpdate = users.First(u => u.Id == 1);
+        userToUpdate.Forename = "Updated Name";
+
+        // Act
+        service.UpdateUser(userToUpdate);
+
+        // Assert
+        users.First(u => u.Id == 1).Forename.Should().Be("Updated Name");
+    }
+
+
+    private IQueryable<User> SetupUsers()
     {
         var users = new[]
         {
-            new User
-            {
-                Forename = forename,
-                Surname = surname,
-                Email = email,
-                IsActive = isActive
-            }
+            new User { Id = 1, Forename = "Peter", Surname = "Loew", Email = "ploew@example.com", IsActive = true, DateOfBirth = new DateTime(1990, 1, 1) },
+            new User { Id = 2, Forename = "Benjamin Franklin", Surname = "Gates", Email = "bfgates@example.com", IsActive = true, DateOfBirth = new DateTime(1990, 1, 1) },
+            new User { Id = 3, Forename = "Castor", Surname = "Troy", Email = "ctroy@example.com", IsActive = false, DateOfBirth = new DateTime(1990, 1, 1) },
         }.AsQueryable();
 
         _dataContext
             .Setup(s => s.GetAll<User>())
             .Returns(users);
+
+        _dataContext
+            .Setup(s => s.Create<User>(It.IsAny<User>()))
+            .Callback<User>(u => users = users.Append(u));
+
+        _dataContext
+            .Setup(s => s.Update<User>(It.IsAny<User>()))
+            .Callback<User>(u => users = users.Select(x => x.Id == u.Id ? u : x));
+
 
         return users;
     }
