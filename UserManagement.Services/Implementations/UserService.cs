@@ -13,6 +13,7 @@ public class UserService : IUserService
     public UserService(IDataContext dataAccess) => _dataAccess = dataAccess;
 
     public void AddUser(User user) => _dataAccess.Create<User>(user);
+    public void DeleteUser(User user) => _dataAccess.Delete<User>(user);
 
     /// <summary>
     /// Return users by active state

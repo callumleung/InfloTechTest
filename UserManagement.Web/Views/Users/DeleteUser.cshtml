@@ -1,0 +1,45 @@
+﻿@model UserManagement.Web.Models.Users.UserViewModel
+
+<h2>Are you sure you want to delete user:</h2>
+
+<div>
+    <label>
+        Id: <a>@Model.Id</a>
+    </label>
+</div>
+
+<div>
+    <label>
+        Forename: <a>@Model.Forename</a>
+    </label>
+</div>
+
+<div>
+    <label>
+        Surname: <a>@Model.Surname</a>
+    </label>
+</div>
+
+
+<div>
+    <label>
+        Email: <a>@Model.Email</a>
+    </label>
+</div>
+
+<div>
+    <label>
+        Is Active: <a>@Model.IsActive</a>
+    </label>
+</div>
+
+<div>
+    <label>
+        Date of Birth: <a>@Model.DateOfBirth</a>
+    </label>
+</div>
+<form asp-controller="Users" asp-action="DeleteUser" asp-route-userId="@Model.Id" method="post">
+    <div>
+        <button type="submit">Delete</button>
+    </div>
+</form>

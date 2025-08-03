@@ -92,9 +92,27 @@ public class UsersController : Controller
     }
 
 
-    private UserViewModel getUserViewModel(long userId)
+    [HttpGet]
+    [Route("DeleteUserView")]
+    public IActionResult getDeleteUser(long userId)
+    {
+        var user = getUserViewModel(userId);
+        return View("DeleteUser", user);
+    }
+
+
+    [HttpPost]
+    [Route("DeleteUser")]
+    public IActionResult DeleteUser(long userId)
     {
         var user = _userService.GetUser(userId);
+        _userService.DeleteUser(user);
+        return RedirectToAction("list");
+    }
+
+    private UserViewModel getUserViewModel(long id)
+    {
+        var user = _userService.GetUser(id);
         return new UserViewModel
         {
             Id = user.Id,
