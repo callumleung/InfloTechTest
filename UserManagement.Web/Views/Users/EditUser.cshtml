@@ -14,6 +14,7 @@
             Forename:
             <input asp-for="Forename" value="@Model.Forename" />
         </label>
+        <span asp-validation-for="@Model.Forename" class="text-danger"></span>
     </div>
 
     <div>
@@ -21,6 +22,7 @@
             Surname
             <input asp-for="Surname" value="@Model.Surname" />
         </label>
+        <span asp-validation-for="@Model.Surname" class="text-danger"></span>
     </div>
 
     <div>
@@ -28,6 +30,7 @@
             Email:
             <input asp-for="Email" value="@Model.Email" />
         </label>
+        <span asp-validation-for="@Model.Email" class="text-danger"></span>
     </div>
 
     <div>
@@ -35,6 +38,7 @@
             Date of Birth:
             <input asp-for="DateOfBirth" value="@Model.DateOfBirth" />
         </label>
+        <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
     </div>
 
     <div>
@@ -42,6 +46,7 @@
             Is Active:
             <input asp-for="IsActive" type="checkbox" value="@Model.IsActive" />
         </label>
+        <span asp-validation-for="@Model.IsActive" class="text-danger"></span>
     </div>
 
     <div>
