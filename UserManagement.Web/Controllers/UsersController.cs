@@ -16,7 +16,7 @@ public class UsersController : Controller
     [Route("list")]
     public ViewResult List(Boolean? active)
     {
-        IEnumerable<User> items = active != null ? _userService.FilterByActive((bool) active) : _userService.GetAll();
+        IEnumerable<User> items = active != null ? _userService.FilterByActive((bool)active) : _userService.GetAll();
 
         var results = items.Select(p => new UserViewModel
         {
@@ -37,8 +37,8 @@ public class UsersController : Controller
     }
 
     [HttpGet]
-    [Route("AddUser")]
-    public ViewResult GetAddUser()
+    [Route("AddUserView")]
+    public ViewResult AddUser()
     {
         return View("AddUser");
     }
@@ -47,6 +47,12 @@ public class UsersController : Controller
     [Route("AddUserViewModel")]
     public IActionResult AddUser(AddUserViewModel addUser)
     {
+        if (!ModelState.IsValid)
+        {
+            // TODO: preserve submitted data in the view model (template is currently not reading from model)
+            return View("AddUser", addUser);
+        }
+
         var user = new User
         {
             Forename = addUser.Forename,
@@ -61,31 +67,37 @@ public class UsersController : Controller
     }
 
     [HttpGet]
-    [Route("User")]
-    public ViewResult ViewUser(long userId)
+    [Route("User/{id}")]
+    public ViewResult ViewUser(long id)
     {
-        return View(getUserViewModel(userId));
+        return View(getUserViewModel(id));
     }
 
     [HttpGet]
-    [Route("EditUserView")]
-    public ViewResult EditUser(long userId)
+    [Route("EditUser/{id}")]
+    public ViewResult EditUser(long id)
     {
-        var user = getUserViewModel(userId);
+        var user = getUserViewModel(id);
         return View("EditUser", user);
     }
 
     [HttpPost]
-    [Route("EditUser")]
-    public IActionResult EditUser(AddUserViewModel userViewModel, long id)
+    [Route("EditUser/{id}")]
+    public IActionResult EditUser(long id, AddUserViewModel editUser)
     {
-        var user = _userService.GetUser(id);
+        if (!ModelState.IsValid)
+        {
+            var returnUser = UserViewModel.FromAddUserView(editUser);
+            returnUser.Id = id;
+            return View("EditUser",returnUser);
+        }
 
-        user.Forename = userViewModel.Forename;
-        user.Surname = userViewModel.Surname;
-        user.Email = userViewModel.Email;
-        user.DateOfBirth = userViewModel.DateOfBirth;
-        user.IsActive = userViewModel.IsActive;
+        var user = _userService.GetUser(id);
+        user.Forename = editUser.Forename;
+        user.Surname = editUser.Surname;
+        user.Email = editUser.Email;
+        user.DateOfBirth = editUser.DateOfBirth;
+        user.IsActive = editUser.IsActive;
 
         _userService.UpdateUser(user);
         return RedirectToAction("list");
@@ -93,19 +105,19 @@ public class UsersController : Controller
 
 
     [HttpGet]
-    [Route("DeleteUserView")]
-    public IActionResult getDeleteUser(long userId)
+    [Route("DeleteUser/{id}")]
+    public IActionResult getDeleteUser(long id)
     {
-        var user = getUserViewModel(userId);
+        var user = getUserViewModel(id);
         return View("DeleteUser", user);
     }
 
 
     [HttpPost]
-    [Route("DeleteUser")]
-    public IActionResult DeleteUser(long userId)
+    [Route("DeleteUser/{id}")]
+    public IActionResult DeleteUser(long id)
     {
-        var user = _userService.GetUser(userId);
+        var user = _userService.GetUser(id);
         _userService.DeleteUser(user);
         return RedirectToAction("list");
     }
@@ -113,14 +125,6 @@ public class UsersController : Controller
     private UserViewModel getUserViewModel(long id)
     {
         var user = _userService.GetUser(id);
-        return new UserViewModel
-        {
-            Id = user.Id,
-            Forename = user.Forename,
-            Surname = user.Surname,
-            Email = user.Email,
-            IsActive = user.IsActive,
-            DateOfBirth = user.DateOfBirth.ToShortDateString()
-        };
+        return UserViewModel.FromUser(user);
     }
 }

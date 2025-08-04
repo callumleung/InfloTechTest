@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
@@ -108,6 +109,30 @@ public class UserControllerTests
             u.IsActive &&
             u.DateOfBirth == addUser.DateOfBirth)), Times.Once);
     }
+
+    [Fact]
+    public void AddUser_WhenModelStateIsInvalid_shouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var addUser = new AddUserViewModel
+        {
+            Forename = "Johnny",
+            Surname = "User",
+            Email = "invalid-email", // Invalid email to trigger model state error
+            DateOfBirth = new DateTime(1990, 1, 1)
+        };
+        controller.ModelState.AddModelError("Email", "Invalid email format");
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = controller.AddUser(addUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>()
+            .Which.Model.Should().Be(addUser);
+    }
+
+    //TODO: Add tests for the AddUser/EditUser methods to cover all validation scenarios.
 
     [Fact]
     public void DeleteUser_WhenCalled_shouldCallService()

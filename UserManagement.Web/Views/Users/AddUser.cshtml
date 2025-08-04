@@ -5,8 +5,9 @@
     <div>
         <label>
             Forename:
-            <input asp-for="Forename" value="" />
+            <input asp-for="Forename"  value="" />
         </label>
+        <span asp-validation-for="@Model.Forename" class="text-danger"></span>
     </div>
 
     <div>
@@ -14,6 +15,7 @@
             Surname
             <input asp-for="Surname" value="" />
         </label>
+        <span asp-validation-for="@Model.Surname" class="text-danger"></span>
     </div>
 
     <div>
@@ -21,6 +23,7 @@
             Email:
             <input asp-for="Email" value="" />
         </label>
+        <span asp-validation-for="@Model.Email" class="text-danger"></span>
     </div>
 
     <div>
@@ -28,9 +31,15 @@
             Date of Birth:
             <input asp-for="DateOfBirth" value="" />
         </label>
+        <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
     </div>
 
     <div>
         <button type="submit">Submit</button>
     </div>
 </form>
+
+<script>
+    jQuery.validator.addMethod("must-be-true", (_, element) => element.checked);
+    jQuery.validator.unobtrusive.adapters.addBool("must-be-true");
+</script>
