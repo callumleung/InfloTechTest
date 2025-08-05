@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
@@ -14,9 +15,10 @@ public class UsersController : Controller
 
     [HttpGet]
     [Route("list")]
-    public ViewResult List(Boolean? active)
+    public async Task<ViewResult> List(Boolean? active)
     {
-        IEnumerable<User> items = active != null ? _userService.FilterByActive((bool)active) : _userService.GetAll();
+        var awaitItems = active != null ? _userService.FilterByActive((bool)active) : _userService.GetAll();
+        var items = await awaitItems;
 
         var results = items.Select(p => new UserViewModel
         {
@@ -45,7 +47,7 @@ public class UsersController : Controller
 
     [HttpPost]
     [Route("AddUserViewModel")]
-    public IActionResult AddUser(AddUserViewModel addUser)
+    public async Task<IActionResult> AddUser(AddUserViewModel addUser)
     {
         if (!ModelState.IsValid)
         {
@@ -62,69 +64,94 @@ public class UsersController : Controller
             DateOfBirth = addUser.DateOfBirth
         };
 
-        _userService.AddUser(user);
+        await _userService.AddUser(user);
         return RedirectToAction("list");
     }
 
     [HttpGet]
     [Route("User/{id}")]
-    public ViewResult ViewUser(long id)
+    public async Task<ViewResult> ViewUser(long id)
     {
-        return View(getUserViewModel(id));
+        return View(await getUserViewModel(id));
     }
 
     [HttpGet]
     [Route("EditUser/{id}")]
-    public ViewResult EditUser(long id)
+    public async Task<IActionResult> EditUser(long id)
     {
-        var user = getUserViewModel(id);
-        return View("EditUser", user);
+        var user = await _userService.GetUser(id);
+
+        if (user == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
+        var result = UserViewModel.FromUser(user);
+        return View("EditUser", result);
     }
 
     [HttpPost]
     [Route("EditUser/{id}")]
-    public IActionResult EditUser(long id, AddUserViewModel editUser)
+    public async Task<IActionResult> EditUser(long id, AddUserViewModel editUser)
     {
         if (!ModelState.IsValid)
         {
             var returnUser = UserViewModel.FromAddUserView(editUser);
             returnUser.Id = id;
-            return View("EditUser",returnUser);
+            return View("EditUser", returnUser);
         }
 
-        var user = _userService.GetUser(id);
+        var user = await _userService.GetUser(id);
+
+        if (user == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
         user.Forename = editUser.Forename;
         user.Surname = editUser.Surname;
         user.Email = editUser.Email;
         user.DateOfBirth = editUser.DateOfBirth;
         user.IsActive = editUser.IsActive;
 
-        _userService.UpdateUser(user);
+        await _userService.UpdateUser(user);
         return RedirectToAction("list");
     }
 
 
     [HttpGet]
     [Route("DeleteUser/{id}")]
-    public IActionResult getDeleteUser(long id)
+    public async Task<IActionResult> getDeleteUser(long id)
     {
-        var user = getUserViewModel(id);
+        var user = await getUserViewModel(id);
         return View("DeleteUser", user);
     }
 
 
     [HttpPost]
     [Route("DeleteUser/{id}")]
-    public IActionResult DeleteUser(long id)
+    public async Task<IActionResult> DeleteUser(long id)
     {
-        var user = _userService.GetUser(id);
-        _userService.DeleteUser(user);
+        var user = await _userService.GetUser(id);
+
+        if (user == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
+        await _userService.DeleteUser(user);
         return RedirectToAction("list");
     }
 
-    private UserViewModel getUserViewModel(long id)
+    private async Task<UserViewModel> getUserViewModel(long id)
     {
-        var user = _userService.GetUser(id);
+        var user = await _userService.GetUser(id);
+
+        if (user == null)
+        {
+            throw new Exception($"User with ID {id} not found.");
+        }
+
         return UserViewModel.FromUser(user);
     }
 }

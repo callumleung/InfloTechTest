@@ -1,4 +1,5 @@
-﻿using UserManagement.Models;
+﻿using System.Threading.Tasks;
+using UserManagement.Models;
 
 namespace UserManagement.Web.Models.Users;
 
