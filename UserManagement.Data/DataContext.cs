@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 
 namespace UserManagement.Data;
@@ -30,6 +32,7 @@ public class DataContext : DbContext, IDataContext
         });
 
     public DbSet<User>? Users { get; set; }
+    public DbSet<Log>? Logs { get; set; }
 
     public async Task<IEnumerable<TEntity>> GetAll<TEntity>() where TEntity : class
         => await base.Set<TEntity>().ToListAsync();
