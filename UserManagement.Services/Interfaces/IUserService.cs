@@ -16,7 +16,7 @@ public interface IUserService
     Task<IEnumerable<User>> FilterByActive(bool isActive);
     Task<IEnumerable<User>> GetAll();
     Task<User?> GetUser(long id);
-    Task AddUser(User user);
+    Task<User> AddUser(User user);
     Task UpdateUser(User user);
     Task DeleteUser(User user);
 }

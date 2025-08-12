@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
+using UserManagement.Services.Interfaces;
 using UserManagement.Web.Models.Users;
 using UserManagement.WebMS.Controllers;
 
@@ -94,6 +96,7 @@ public class UserControllerTests
     {
         // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
         var controller = CreateController();
+        SetupUsers();
         var addUser = new AddUserViewModel
         {
             Forename = "Johnny",
@@ -184,10 +187,21 @@ public class UserControllerTests
             .Setup(s => s.GetUser(It.IsAny<long>()))
             .ReturnsAsync((long id) => users.FirstOrDefault(u => u.Id == id));
 
+        _userService
+            .Setup(s => s.AddUser(It.IsAny<User>()))
+            .ReturnsAsync((User user) =>
+            {
+                user.Id = 20;
+                return user;
+            }
+            );
+
 
         return users;
     }
 
     private readonly Mock<IUserService> _userService = new();
-    private UsersController CreateController() => new(_userService.Object);
+    private readonly Mock<ILogService> _logService = new();
+    private readonly Mock<ILogger<UsersController>> _logger = new();
+    private UsersController CreateController() => new(_userService.Object, _logService.Object, _logger.Object);
 }

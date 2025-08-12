@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 
 namespace UserManagement.Data;
@@ -30,11 +32,12 @@ public class DataContext : DbContext, IDataContext
         });
 
     public DbSet<User>? Users { get; set; }
+    public DbSet<Log>? Logs { get; set; }
 
     public async Task<IEnumerable<TEntity>> GetAll<TEntity>() where TEntity : class
         => await base.Set<TEntity>().ToListAsync();
 
-    public async Task<IEnumerable<User>> GetByActive<TEntity>(bool active) where TEntity : User
+    public async Task<IEnumerable<User>> GetActiveUsers(bool active)
     {
         if (Users == null)
         {
@@ -47,10 +50,12 @@ public class DataContext : DbContext, IDataContext
     public async Task<TEntity?> GetById<TEntity>(long id) where TEntity : class
         => await base.Set<TEntity>().FindAsync(id);
 
-    public async Task Create<TEntity>(TEntity entity) where TEntity : class
+    
+    public async Task<TEntity> Create<TEntity>(TEntity entity) where TEntity : class
     {
         base.Add(entity);
         await SaveChangesAsync();
+        return entity;
     }
 
     public async new Task Update<TEntity>(TEntity entity) where TEntity : class
@@ -65,4 +70,13 @@ public class DataContext : DbContext, IDataContext
         await SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<Log>> GetLogsForUser(long userId)
+    {
+        if (Logs == null)
+        {
+            return Enumerable.Empty<Log>();
+        }
+
+        return await Logs.Where(log => log.UserId == userId).ToListAsync();
+    }
 }
