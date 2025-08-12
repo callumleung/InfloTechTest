@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 
 namespace UserManagement.Web.Models.Users;
@@ -11,6 +14,8 @@ public class UserViewModel
     public string? Email { get; set; }
     public bool IsActive { get; set; }
     public string? DateOfBirth { get; set; }
+
+    public List<LogViewModel> actions { get; set; } = new();
 
     public static UserViewModel FromUser(User user)
     {
@@ -38,4 +43,16 @@ public class UserViewModel
             DateOfBirth = user.DateOfBirth.ToShortDateString()
         };
     }
+}
+
+public class LogViewModel
+{
+    public long Id { get; set; }
+    public LogEvents? Event { get; set; }
+    public LogLevel? LogLevel { get; set; }
+    public string Message { get; set; } = default!;
+    public string? Exception { get; set; }
+    public DateTime Timestamp { get; set; }
+    public long? UserId { get; set; }
+
 }

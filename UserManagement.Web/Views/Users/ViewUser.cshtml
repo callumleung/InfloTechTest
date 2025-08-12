@@ -1,41 +1,76 @@
 ﻿@model UserManagement.Web.Models.Users.UserViewModel
 
-<h2>View User</h2>
+<div style="display: flex; flex-direction: column; height: 85vh;">
+    <h2>View User</h2>
 
-<div>
-    <label>
-        Id: <a>@Model.Id</a>
-    </label>
+    <div>
+        <label>
+            Id: <a>@Model.Id</a>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Forename: <a>@Model.Forename</a>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Surname: <a>@Model.Surname</a>
+        </label>
+    </div>
+
+
+    <div>
+        <label>
+            Email: <a>@Model.Email</a>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Is Active: <a>@Model.IsActive</a>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            Date of Birth: <a>@Model.DateOfBirth</a>
+        </label>
+    </div>
+
+    @if (Model.actions != null && Model.actions.Any())
+    {
+        <h3>User Actions</h3>
+        <div style="flex: 1 1 0; min-height: 0; overflow-y: auto;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>EventId</th>
+                    <th>Level</th>
+                    <th>Message</th>
+                    <th>Exception</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var action in Model.actions)
+                {
+                    <tr>
+                        <td>@action.Timestamp</td>
+                        <td>@action.Event</td>
+                        <td>@action.LogLevel</td>
+                        <td>@action.Message</td>
+                        <td>@action.Exception</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+    }
+    else
+    {
+        <p>No actions found for this user.</p>
+    }
 </div>
-
-<div>
-    <label>
-        Forename: <a>@Model.Forename</a>
-    </label>
-</div>
-
-<div>
-    <label>
-        Surname: <a>@Model.Surname</a>
-    </label>
-</div>
-
-
-<div>
-    <label>
-        Email: <a>@Model.Email</a>
-    </label>
-</div>
-
-<div>
-    <label>
-        Is Active: <a>@Model.IsActive</a>
-    </label>
-</div>
-
-<div>
-    <label>
-        Date of Birth: <a>@Model.DateOfBirth</a>
-    </label>
-</div>
-

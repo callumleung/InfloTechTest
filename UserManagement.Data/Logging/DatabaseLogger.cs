@@ -13,11 +13,13 @@ internal class DatabaseLogger : ILogger
 {
     private readonly DatabaseLoggerOptions _options;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IExternalScopeProvider _scopeProvider;
 
-    public DatabaseLogger(DatabaseLoggerOptions options, IServiceProvider serviceProvider)
+    public DatabaseLogger(DatabaseLoggerOptions options, IServiceProvider serviceProvider, IExternalScopeProvider scopeProvider)
     {
         _options = options;
         _serviceProvider = serviceProvider;
+        _scopeProvider = scopeProvider;
     }
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => default!;
@@ -42,13 +44,28 @@ internal class DatabaseLogger : ILogger
         string message = formatter(state, exception);
         string logLevelText = logLevel.ToString();
 
+        // Try to extract UserId from the scope
+        long? userId = null;
+        _scopeProvider.ForEachScope((scope, state) =>
+        {
+            if (scope is IEnumerable<KeyValuePair<string, object>> values)
+            {
+                var userIdEntry = values.FirstOrDefault(kv => kv.Key == "UserId");
+                if (userIdEntry.Value is long id)
+                {
+                    userId = id;
+                }
+            }
+        }, state);
+
         var log = new Log
         {
-            eventId = eventId,
-            logLevel = logLevel,
+            EventId = eventId,
+            LogLevel = logLevel,
             Message = message,
             Exception = exception?.ToString(),
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow,
+            UserId = userId
         };
 
         using (var scope = _serviceProvider.CreateScope())
@@ -56,8 +73,5 @@ internal class DatabaseLogger : ILogger
             var dataAccess = scope.ServiceProvider.GetRequiredService<IDataContext>();
             dataAccess.Create(log);
         }
-    }
-
-
-
+    }    
 }

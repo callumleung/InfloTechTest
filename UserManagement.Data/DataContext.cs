@@ -37,7 +37,7 @@ public class DataContext : DbContext, IDataContext
     public async Task<IEnumerable<TEntity>> GetAll<TEntity>() where TEntity : class
         => await base.Set<TEntity>().ToListAsync();
 
-    public async Task<IEnumerable<User>> GetByActive<TEntity>(bool active) where TEntity : User
+    public async Task<IEnumerable<User>> GetActiveUsers(bool active)
     {
         if (Users == null)
         {
@@ -50,10 +50,12 @@ public class DataContext : DbContext, IDataContext
     public async Task<TEntity?> GetById<TEntity>(long id) where TEntity : class
         => await base.Set<TEntity>().FindAsync(id);
 
-    public async Task Create<TEntity>(TEntity entity) where TEntity : class
+    
+    public async Task<TEntity> Create<TEntity>(TEntity entity) where TEntity : class
     {
         base.Add(entity);
         await SaveChangesAsync();
+        return entity;
     }
 
     public async new Task Update<TEntity>(TEntity entity) where TEntity : class
@@ -68,4 +70,13 @@ public class DataContext : DbContext, IDataContext
         await SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<Log>> GetLogsForUser(long userId)
+    {
+        if (Logs == null)
+        {
+            return Enumerable.Empty<Log>();
+        }
+
+        return await Logs.Where(log => log.UserId == userId).ToListAsync();
+    }
 }

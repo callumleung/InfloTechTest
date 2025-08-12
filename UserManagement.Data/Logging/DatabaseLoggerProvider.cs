@@ -8,10 +8,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace UserManagement.Data.Logging;
-internal class DatabaseLoggerProvider : ILoggerProvider
+internal class DatabaseLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
     public readonly DatabaseLoggerOptions Options;
     private readonly IServiceProvider _serviceProvider;
+    private IExternalScopeProvider? _scopeProvider;
 
     public DatabaseLoggerProvider(IOptions<DatabaseLoggerOptions> options, IServiceProvider serviceProvider)
     {
@@ -19,7 +20,10 @@ internal class DatabaseLoggerProvider : ILoggerProvider
         _serviceProvider = serviceProvider;
     }
 
-    public ILogger CreateLogger(string categoryName) => new DatabaseLogger(Options, _serviceProvider);
+    public ILogger CreateLogger(string categoryName) => new DatabaseLogger(Options, _serviceProvider, _scopeProvider ?? new LoggerExternalScopeProvider());
+
+    public void SetScopeProvider(IExternalScopeProvider scopeProvider)
+    => _scopeProvider = scopeProvider;
 
     public void Dispose() { }
 }
