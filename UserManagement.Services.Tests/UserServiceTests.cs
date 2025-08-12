@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Implementations;
+using UserManagement.Services.Interfaces;
 
 namespace UserManagement.Data.Tests;
 

@@ -16,10 +16,10 @@ public class UsersController : Controller
     private readonly IUserService _userService;
     private readonly ILogService _logService;
     private readonly ILogger _logger;
-    public UsersController(IUserService userService, ILogService loggingService, ILogger<UsersController> logger)
+    public UsersController(IUserService userService, ILogService logService, ILogger<UsersController> logger)
         {
             _userService = userService;
-            _logService = loggingService;
+            _logService = logService;
             _logger = logger;
         }
 

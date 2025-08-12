@@ -8,6 +8,6 @@ using UserManagement.Data.Entities;
 namespace UserManagement.Services.Interfaces;
 public interface ILogService
 {
-   Task<IEnumerable<Log>> GetLogs();
+   Task<IEnumerable<Log>> GetAll();
    Task<IEnumerable<Log>> GetLogsByUser(long id);
 }
