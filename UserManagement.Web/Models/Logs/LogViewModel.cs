@@ -15,5 +15,4 @@ public class LogViewModel
     public string? Exception { get; set; }
     public DateTime Timestamp { get; set; }
     public User? User { get; set; }
-
 }

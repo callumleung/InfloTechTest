@@ -15,8 +15,7 @@ public class UserViewModel
     public string? Email { get; set; }
     public bool IsActive { get; set; }
     public string? DateOfBirth { get; set; }
-
-    public List<LogViewModel> actions { get; set; } = new();
+    public List<UserViewLogModel> logs { get; set; } = new();
 
     public static UserViewModel FromUser(User user)
     {
@@ -44,4 +43,13 @@ public class UserViewModel
             DateOfBirth = user.DateOfBirth.ToShortDateString()
         };
     }
+}
+
+public class UserViewLogModel
+{
+    public string Message { get; set; } = default!;
+
+    public LogLevel? LogLevel { get; set; }
+
+    public DateTime Timestamp { get; set; }
 }

@@ -40,7 +40,7 @@
         </label>
     </div>
 
-    @if (Model.actions != null && Model.actions.Any())
+    @if (Model.logs != null && Model.logs.Any())
     {
         <h3>User Actions</h3>
         <div style="flex: 1 1 0; min-height: 0; overflow-y: auto;">
@@ -53,7 +53,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var action in Model.actions)
+                @foreach (var action in Model.logs)
                 {
                     <tr>
                         <td>@action.Timestamp</td>

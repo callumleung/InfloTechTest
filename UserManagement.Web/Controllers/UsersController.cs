@@ -98,14 +98,10 @@ public class UsersController : Controller
         var user = await getUserViewModel(id);
         var logs = await _logService.GetLogsByUser(id);
 
-        user.actions = logs.Select(log => new LogViewModel
+        user.logs = logs.Select(log => new UserViewLogModel
         {
-            Id = log.Id,
-                            EventId = log.EventId.Id,
-                UserAction = log.UserAction,
             LogLevel = log.LogLevel,
             Message = log.Message,
-            Exception = log.Exception?.ToString(),
             Timestamp = log.Timestamp
                 
         }).ToList();
