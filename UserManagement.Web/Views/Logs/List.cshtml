@@ -28,8 +28,16 @@
                             <span>Action: @log.UserAction</span>
                             <span>EventId: @log.EventId </span>
                             <span>UserId: @log.User?.Id </span>
-                            <span class="exception">Exception: @log.Exception </span>                 
                         </div>
+                        @if (!string.IsNullOrEmpty(@log.Exception))
+                        {
+                            <div>
+                                <div>
+                                    Exception:
+                                </div>
+                                <code> @log.Exception</code>
+                            </div>                            
+                        }                        
                     </td>
                 </tr>
             }

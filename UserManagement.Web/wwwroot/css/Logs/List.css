@@ -1,4 +1,4 @@
-﻿.log-details-row {
+﻿.log-details-row{
     display: none;
     background-color: #f9f9f9;
 }
@@ -14,11 +14,11 @@
 }
 
 .log-details > * {
-    flex: 0 0 25%;
-    max-width: 25%;
+    flex: 0 0 33%;
+    max-width: 33%;
 }
 
-.exception {
+.log-details-excetion {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

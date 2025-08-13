@@ -145,7 +145,7 @@ public class UserControllerTests
         {
             Forename = "Johnny",
             Surname = "User",
-            Email = "invalid-email", // Invalid email to trigger model state error
+            Email = "invalid-email@gmail.com", // Invalid email to trigger model state error
             DateOfBirth = new DateTime(1990, 1, 1),
         };
         controller.ModelState.AddModelError("Email", "Invalid email format");
@@ -158,6 +158,138 @@ public class UserControllerTests
     }
 
     //TODO: Add tests for the AddUser/EditUser methods to cover all validation scenarios.
+
+    [Fact]
+    public async void AddUser_WhenUserAgeIsUnder18_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var addUser = new AddUserViewModel
+        {
+            Forename = "Johnny",
+            Surname = "User",
+            Email = "email@gmail.com",
+            DateOfBirth = DateTime.Now,
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.AddUser(addUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(addUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async void AddUser_WhenUserForenameContainsNumbers_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var addUser = new AddUserViewModel
+        {
+            Forename = "Johnny5555",
+            Surname = "User",
+            Email = "email@email.com", // Invalid email to trigger model state error
+            DateOfBirth = new DateTime(1990, 1, 1),
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.AddUser(addUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(addUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async void AddUser_WhenUserSurnameContainsNumbers_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var addUser = new AddUserViewModel
+        {
+            Forename = "Johnny",
+            Surname = "User555",
+            Email = "email@email.com", // Invalid email to trigger model state error
+            DateOfBirth = new DateTime(1990, 1, 1),
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.AddUser(addUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(addUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async void EditUser_WhenUserAgeIsUnder18_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var editUser = new AddUserViewModel
+        {
+            Forename = "newName",
+            Surname = "User",
+            Email = "email@email.com", // Invalid email to trigger model state error
+            DateOfBirth = DateTime.Now,
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.EditUser(0, editUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(editUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async void EditUser_WhenUserForenameContainsNumbers_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var editUser = new AddUserViewModel
+        {
+            Forename = "Johnny555",
+            Surname = "User",
+            Email = "email@email.com", // Invalid email to trigger model state error
+            DateOfBirth = new DateTime(1990, 1, 1),
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.EditUser(0, editUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(editUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async void EditUser_WhenUserSurnameContainsNumbers_ShouldReturnViewWithModel()
+    {
+        // Arrange: Initializes objects and sets the value of the data that is passed to the method under test.
+        var controller = CreateController();
+        var editUser = new AddUserViewModel
+        {
+            Forename = "Johnny",
+            Surname = "User555",
+            Email = "email@email.com", // Invalid email to trigger model state error
+            DateOfBirth = new DateTime(1990, 1, 1),
+        };
+
+        // Act: Invokes the method under test with the arranged parameters.
+        var result = await controller.EditUser(0, editUser);
+
+        // Assert: Verifies that the action of the method under test behaves as expected.
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(editUser);
+        controller.ModelState.IsValid.Should().BeFalse();
+        controller.ModelState.ErrorCount.Should().Be(1);
+    }
 
     [Fact]
     public async void DeleteUser_WhenCalled_shouldCallService()

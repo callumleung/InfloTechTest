@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Loew",
                         Email = "ploew@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1980, 1, 1),
                     },
                     new User
                     {
@@ -36,6 +38,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Gates",
                         Email = "bfgates@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1975, 5, 15),
                     },
                     new User
                     {
@@ -44,6 +47,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Troy",
                         Email = "ctroy@example.com",
                         IsActive = false,
+                        DateOfBirth = new DateTime(1985, 3, 10),
                     },
                     new User
                     {
@@ -52,6 +56,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Raines",
                         Email = "mraines@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1982, 7, 20),
                     },
                     new User
                     {
@@ -60,6 +65,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Goodspeed",
                         Email = "sgodspeed@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1988, 11, 30),
                     },
                     new User
                     {
@@ -68,6 +74,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "McDunnough",
                         Email = "himcdunnough@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1983, 2, 25),
                     },
                     new User
                     {
@@ -76,6 +83,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Poe",
                         Email = "cpoe@example.com",
                         IsActive = false,
+                        DateOfBirth = new DateTime(1980, 6, 5),
                     },
                     new User
                     {
@@ -84,6 +92,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Malus",
                         Email = "emalus@example.com",
                         IsActive = false,
+                        DateOfBirth = new DateTime(1978, 4, 18),
                     },
                     new User
                     {
@@ -92,6 +101,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Macready",
                         Email = "dmacready@example.com",
                         IsActive = false,
+                        DateOfBirth = new DateTime(1984, 9, 12),
                     },
                     new User
                     {
@@ -100,6 +110,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Blaze",
                         Email = "jblaze@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1981, 8, 22),
                     },
                     new User
                     {
@@ -108,6 +119,7 @@ public class DataContext : DbContext, IDataContext
                         Surname = "Feld",
                         Email = "rfeld@example.com",
                         IsActive = true,
+                        DateOfBirth = new DateTime(1986, 12, 1),
                     },
                 }
             );
