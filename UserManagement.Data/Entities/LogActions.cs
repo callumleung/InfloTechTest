@@ -5,12 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace UserManagement.Data.Entities;
-public enum LogEvents
+public enum LogActions
 {
-    AddUser = 1000,
-    EditUser = 1001,
-    DeleteUser = 1002,
-    ViewUser = 1003,
-    FetchUser = 1004,
-    FetchAllUsers = 1005,
+    FetchAll = 2000,
+    FetchByUser = 2001,
 }

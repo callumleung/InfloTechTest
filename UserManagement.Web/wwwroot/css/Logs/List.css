@@ -1,0 +1,32 @@
+﻿.log-details-row {
+    display: none;
+    background-color: #f9f9f9;
+}
+
+.log-row {
+    cursor:pointer;
+}
+
+.log-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.log-details > * {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+.exception {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block; 
+    max-width: 100%;
+}
+
+.table-responsive {
+    max-height: 800px; /* or any height you prefer */
+    overflow-y: auto;
+}

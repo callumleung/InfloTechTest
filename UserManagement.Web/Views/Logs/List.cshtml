@@ -1,0 +1,54 @@
+﻿@model UserManagement.Web.Models.Logs.LogListViewModel
+<link rel="stylesheet" href="~/css/Logs/List.css" asp-append-version="true" />
+<h2>Application Logs</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Level</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+           @for (int i = 0; i < Model.Logs.Count; i++)
+            {
+                var log = Model.Logs[i];
+                <tr class="log-row" data-details-id="details-@i" >
+                    <td>@log.Timestamp</td>
+                    <td>@log.LogLevel</td>
+                    <td>@log.Message</td>
+                </tr>
+                <tr id="details-@i" class="log-details-row">
+                    <td colspan="3" >
+                        <div class="log-details">
+                            <span>Action: @log.UserAction</span>
+                            <span>EventId: @log.EventId </span>
+                            <span>UserId: @log.User?.Id </span>
+                            <span class="exception">Exception: @log.Exception </span>                 
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.log-row').forEach(function (row) {
+            row.addEventListener('click', function () {
+                var detailsId = row.getAttribute('data-details-id');
+                var detailsRow = document.getElementById(detailsId);
+                if (detailsRow.style.display === 'none') {
+                    detailsRow.style.display = 'table-row';
+                } else {
+                    detailsRow.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+}

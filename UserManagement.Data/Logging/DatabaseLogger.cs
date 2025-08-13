@@ -44,8 +44,9 @@ internal class DatabaseLogger : ILogger
         string message = formatter(state, exception);
         string logLevelText = logLevel.ToString();
 
-        // Try to extract UserId from the scope
+        // Try to extract UserId and action from the scope
         long? userId = null;
+        UserActions? userAction = null;
         _scopeProvider.ForEachScope((scope, state) =>
         {
             if (scope is IEnumerable<KeyValuePair<string, object>> values)
@@ -55,6 +56,12 @@ internal class DatabaseLogger : ILogger
                 {
                     userId = id;
                 }
+
+                var userActionEntry = values.FirstOrDefault(kv => kv.Key == "UserAction");
+                if (userActionEntry.Value is UserActions value)
+                {
+                    userAction = value;
+                }
             }
         }, state);
 
@@ -62,6 +69,7 @@ internal class DatabaseLogger : ILogger
         {
             EventId = eventId,
             LogLevel = logLevel,
+            UserAction = userAction,
             Message = message,
             Exception = exception?.ToString(),
             Timestamp = DateTime.UtcNow,
