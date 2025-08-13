@@ -26,7 +26,7 @@ public class UserViewModel
             Surname = user.Surname,
             Email = user.Email,
             IsActive = user.IsActive,
-            DateOfBirth = user.DateOfBirth.ToShortDateString()
+            DateOfBirth = user.DateOfBirth.ToShortDateString(),
         };
     }
 
@@ -39,7 +39,7 @@ public class UserViewModel
             Surname = user.Surname,
             Email = user.Email,
             IsActive = user.IsActive,
-            DateOfBirth = user.DateOfBirth.ToShortDateString()
+            DateOfBirth = user.DateOfBirth.ToShortDateString(),
         };
     }
 }

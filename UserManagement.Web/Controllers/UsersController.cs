@@ -17,7 +17,12 @@ public class UsersController : Controller
     private readonly IUserService _userService;
     private readonly ILogService _logService;
     private readonly ILogger _logger;
-    public UsersController(IUserService userService, ILogService logService, ILogger<UsersController> logger)
+
+    public UsersController(
+        IUserService userService,
+        ILogService logService,
+        ILogger<UsersController> logger
+    )
     {
         _userService = userService;
         _logService = logService;
@@ -28,9 +33,14 @@ public class UsersController : Controller
     [Route("list")]
     public async Task<ViewResult> List(Boolean? active)
     {
-        _logger.LogInformation((int)UserActions.FetchAllUsers, "Retrieving user list with active filter: {Active}", active);
+        _logger.LogInformation(
+            (int)UserActions.FetchAllUsers,
+            "Retrieving user list with active filter: {Active}",
+            active
+        );
 
-        var awaitItems = active != null ? _userService.FilterByActive((bool)active) : _userService.GetAll();
+        var awaitItems =
+            active != null ? _userService.FilterByActive((bool)active) : _userService.GetAll();
         var items = await awaitItems;
 
         var results = items.Select(p => new UserViewModel
@@ -40,15 +50,16 @@ public class UsersController : Controller
             Surname = p.Surname,
             Email = p.Email,
             IsActive = p.IsActive,
-            DateOfBirth = p.DateOfBirth.ToShortDateString()
+            DateOfBirth = p.DateOfBirth.ToShortDateString(),
         });
 
-        var model = new UserListViewModel
-        {
-            Items = results.ToList()
-        };
+        var model = new UserListViewModel { Items = results.ToList() };
 
-        _logger.LogInformation((int)UserActions.FetchAllUsers, "User list retrieved with {Count} items.", model.Items.Count);
+        _logger.LogInformation(
+            (int)UserActions.FetchAllUsers,
+            "User list retrieved with {Count} items.",
+            model.Items.Count
+        );
 
         return View(model);
     }
@@ -77,34 +88,49 @@ public class UsersController : Controller
             Surname = addUser.Surname,
             Email = addUser.Email,
             IsActive = true,
-            DateOfBirth = addUser.DateOfBirth
+            DateOfBirth = addUser.DateOfBirth,
         };
 
-
-        _logger.LogInformation("Adding new user: {Forename} {Surname}", user.Forename, user.Surname);
+        _logger.LogInformation(
+            "Adding new user: {Forename} {Surname}",
+            user.Forename,
+            user.Surname
+        );
         var createdUser = await _userService.AddUser(user);
 
-        LogWithUserScope(createdUser.Id, LogLevel.Information, UserActions.AddUser, "User created with ID {Id}", createdUser.Id);
+        LogWithUserScope(
+            createdUser.Id,
+            LogLevel.Information,
+            UserActions.AddUser,
+            "User created with ID {Id}",
+            createdUser.Id
+        );
 
-        return RedirectToAction("ViewUser",new { id = createdUser.Id });
+        return RedirectToAction("ViewUser", new { id = createdUser.Id });
     }
 
     [HttpGet]
     [Route("User/{id}")]
     public async Task<ViewResult> ViewUser(long id)
     {
-        LogWithUserScope(id, LogLevel.Information, UserActions.ViewUser, "Viewing user with ID {Id}", id);
+        LogWithUserScope(
+            id,
+            LogLevel.Information,
+            UserActions.ViewUser,
+            "Viewing user with ID {Id}",
+            id
+        );
 
         var user = await getUserViewModel(id);
         var logs = await _logService.GetLogsByUser(id);
 
         user.logs = logs.Select(log => new UserViewLogModel
-        {
-            LogLevel = log.LogLevel,
-            Message = log.Message,
-            Timestamp = log.Timestamp
-                
-        }).ToList();
+            {
+                LogLevel = log.LogLevel,
+                Message = log.Message,
+                Timestamp = log.Timestamp,
+            })
+            .ToList();
 
         return View(user);
     }
@@ -113,7 +139,13 @@ public class UsersController : Controller
     [Route("EditUser/{id}")]
     public async Task<IActionResult> EditUser(long id)
     {
-        LogWithUserScope(id, LogLevel.Information, UserActions.EditUser, "Editing user with ID {Id}", id);
+        LogWithUserScope(
+            id,
+            LogLevel.Information,
+            UserActions.EditUser,
+            "Editing user with ID {Id}",
+            id
+        );
         var user = await _userService.GetUser(id);
 
         if (user == null)
@@ -136,7 +168,13 @@ public class UsersController : Controller
             return View("EditUser", returnUser);
         }
 
-        LogWithUserScope(id, LogLevel.Information, UserActions.FetchUser, "Retrieving user with ID {Id}", id);
+        LogWithUserScope(
+            id,
+            LogLevel.Information,
+            UserActions.FetchUser,
+            "Retrieving user with ID {Id}",
+            id
+        );
         var user = await _userService.GetUser(id);
 
         if (user == null)
@@ -154,7 +192,6 @@ public class UsersController : Controller
         return RedirectToAction("ViewUser", new { id });
     }
 
-
     [HttpGet]
     [Route("DeleteUser/{id}")]
     public async Task<IActionResult> getDeleteUser(long id)
@@ -162,7 +199,6 @@ public class UsersController : Controller
         var user = await getUserViewModel(id);
         return View("DeleteUser", user);
     }
-
 
     [HttpPost]
     [Route("DeleteUser/{id}")]
@@ -176,16 +212,26 @@ public class UsersController : Controller
             return NotFound($"User with ID {id} not found.");
         }
 
-        LogWithUserScope(user.Id, LogLevel.Information, UserActions.DeleteUser, "Deleting user with ID {Id}", user.Id);
+        LogWithUserScope(
+            user.Id,
+            LogLevel.Information,
+            UserActions.DeleteUser,
+            "Deleting user with ID {Id}",
+            user.Id
+        );
         await _userService.DeleteUser(user);
         return RedirectToAction("list");
     }
 
-
-
     private async Task<UserViewModel> getUserViewModel(long id)
     {
-        LogWithUserScope(id, LogLevel.Information, UserActions.FetchUser, "Retrieving user with ID {Id}", id);
+        LogWithUserScope(
+            id,
+            LogLevel.Information,
+            UserActions.FetchUser,
+            "Retrieving user with ID {Id}",
+            id
+        );
         var user = await _userService.GetUser(id);
 
         if (user == null)
@@ -197,9 +243,19 @@ public class UsersController : Controller
         return UserViewModel.FromUser(user);
     }
 
-    private void LogWithUserScope(long userId, LogLevel level, UserActions logEvent, string message, params object[] args)
+    private void LogWithUserScope(
+        long userId,
+        LogLevel level,
+        UserActions logEvent,
+        string message,
+        params object[] args
+    )
     {
-        using (_logger.BeginScope(new Dictionary<string, object> { ["UserId"] = userId, ["UserAction"]= logEvent}))
+        using (
+            _logger.BeginScope(
+                new Dictionary<string, object> { ["UserId"] = userId, ["UserAction"] = logEvent }
+            )
+        )
         {
             _logger.Log(level, message, args);
         }

@@ -7,6 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDomainServices(this IServiceCollection services)
-        => services.AddScoped<IUserService, UserService>().AddScoped<ILogService, LogService>();
+    public static IServiceCollection AddDomainServices(this IServiceCollection services) =>
+        services.AddScoped<IUserService, UserService>().AddScoped<ILogService, LogService>();
 }

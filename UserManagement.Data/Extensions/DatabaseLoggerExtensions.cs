@@ -8,9 +8,13 @@ using Microsoft.Extensions.Logging;
 using UserManagement.Data.Logging;
 
 namespace UserManagement.Data.Extensions;
+
 public static class DatabaseLoggerExtensions
 {
-    public static ILoggingBuilder AddDatabaseLogger(this ILoggingBuilder builder, Action<DatabaseLoggerOptions> configure)
+    public static ILoggingBuilder AddDatabaseLogger(
+        this ILoggingBuilder builder,
+        Action<DatabaseLoggerOptions> configure
+    )
     {
         if (builder == null)
         {
@@ -19,7 +23,6 @@ public static class DatabaseLoggerExtensions
 
         builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
         builder.Services.Configure(configure);
-
 
         return builder;
     }

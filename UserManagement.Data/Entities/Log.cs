@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using UserManagement.Models;
 
 namespace UserManagement.Data.Entities;
+
 public class Log
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

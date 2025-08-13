@@ -9,7 +9,8 @@ using UserManagement.Services.Implementations;
 using UserManagement.Services.Interfaces;
 
 namespace UserManagement.Data.Tests;
-public  class LogServiceTests
+
+public class LogServiceTests
 {
     [Fact]
     public async void GetAll_WhenContextReturnsEntities_MustReturnSameEntities()
@@ -43,13 +44,16 @@ public  class LogServiceTests
     {
         var logs = new List<Log>
         {
-            new Log { Id = 1, Message = "Log 1", UserId = 1 },
-            new Log { Id = 2, Message = "Log 2" }
+            new Log
+            {
+                Id = 1,
+                Message = "Log 1",
+                UserId = 1,
+            },
+            new Log { Id = 2, Message = "Log 2" },
         };
 
-        _dataContext
-            .Setup(s => s.GetAll<Log>())
-            .ReturnsAsync(logs);
+        _dataContext.Setup(s => s.GetAll<Log>()).ReturnsAsync(logs);
 
         _dataContext
             .Setup(s => s.GetLogsForUser(It.IsAny<long>()))
@@ -58,7 +62,7 @@ public  class LogServiceTests
         return logs.AsQueryable();
     }
 
-
     private readonly Mock<IDataContext> _dataContext = new();
+
     private LogService CreateService() => new(_dataContext.Object);
 }
