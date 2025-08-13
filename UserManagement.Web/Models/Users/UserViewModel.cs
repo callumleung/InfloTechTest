@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using UserManagement.Data.Entities;
 using UserManagement.Models;
+using UserManagement.Web.Models.Logs;
 
 namespace UserManagement.Web.Models.Users;
 
@@ -14,8 +15,7 @@ public class UserViewModel
     public string? Email { get; set; }
     public bool IsActive { get; set; }
     public string? DateOfBirth { get; set; }
-
-    public List<LogViewModel> actions { get; set; } = new();
+    public List<UserViewLogModel> logs { get; set; } = new();
 
     public static UserViewModel FromUser(User user)
     {
@@ -30,7 +30,6 @@ public class UserViewModel
         };
     }
 
-    // Arguably UserViewModel and AddUserViewModel should just be a single model
     public static UserViewModel FromAddUserView(AddUserViewModel user)
     {
         return new UserViewModel
@@ -45,14 +44,11 @@ public class UserViewModel
     }
 }
 
-public class LogViewModel
+public class UserViewLogModel
 {
-    public long Id { get; set; }
-    public LogEvents? Event { get; set; }
-    public LogLevel? LogLevel { get; set; }
     public string Message { get; set; } = default!;
-    public string? Exception { get; set; }
-    public DateTime Timestamp { get; set; }
-    public long? UserId { get; set; }
 
+    public LogLevel? LogLevel { get; set; }
+
+    public DateTime Timestamp { get; set; }
 }

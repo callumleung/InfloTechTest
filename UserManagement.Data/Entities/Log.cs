@@ -14,6 +14,7 @@ public class Log
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     public EventId EventId { get; set; }
+    public UserActions? UserAction { get; set; }
     public LogLevel LogLevel { get; set; }
     public string Message { get; set; } = default!;
     public string? Exception { get; set; }
