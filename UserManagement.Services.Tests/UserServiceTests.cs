@@ -52,8 +52,8 @@ public class UserServiceTests
         };
 
         _dataContext
-           .Setup(s => s.Create<User>(It.IsAny<User>()))
-           .Callback<User>(u => users = users.Append(newUser));
+            .Setup(s => s.Create<User>(It.IsAny<User>()))
+            .Callback<User>(u => users = users.Append(newUser));
 
         // Act
         await service.AddUser(newUser);
@@ -79,19 +79,40 @@ public class UserServiceTests
         users.First(u => u.Id == 1).Forename.Should().Be("Updated Name");
     }
 
-
     private IQueryable<User> SetupUsers()
     {
         var users = new[]
         {
-            new User { Id = 1, Forename = "Peter", Surname = "Loew", Email = "ploew@example.com", IsActive = true, DateOfBirth = new DateTime(1990, 1, 1) },
-            new User { Id = 2, Forename = "Benjamin Franklin", Surname = "Gates", Email = "bfgates@example.com", IsActive = true, DateOfBirth = new DateTime(1990, 1, 1) },
-            new User { Id = 3, Forename = "Castor", Surname = "Troy", Email = "ctroy@example.com", IsActive = false, DateOfBirth = new DateTime(1990, 1, 1) },
+            new User
+            {
+                Id = 1,
+                Forename = "Peter",
+                Surname = "Loew",
+                Email = "ploew@example.com",
+                IsActive = true,
+                DateOfBirth = new DateTime(1990, 1, 1),
+            },
+            new User
+            {
+                Id = 2,
+                Forename = "Benjamin Franklin",
+                Surname = "Gates",
+                Email = "bfgates@example.com",
+                IsActive = true,
+                DateOfBirth = new DateTime(1990, 1, 1),
+            },
+            new User
+            {
+                Id = 3,
+                Forename = "Castor",
+                Surname = "Troy",
+                Email = "ctroy@example.com",
+                IsActive = false,
+                DateOfBirth = new DateTime(1990, 1, 1),
+            },
         }.AsQueryable();
 
-        _dataContext
-            .Setup(s => s.GetAll<User>())
-            .ReturnsAsync(users);
+        _dataContext.Setup(s => s.GetAll<User>()).ReturnsAsync(users);
 
         _dataContext
             .Setup(s => s.Create<User>(It.IsAny<User>()))
@@ -105,10 +126,10 @@ public class UserServiceTests
             .Setup(s => s.GetById<User>(It.IsAny<long>()))
             .ReturnsAsync((long id) => users.FirstOrDefault(u => u.Id == id));
 
-
         return users;
     }
 
     private readonly Mock<IDataContext> _dataContext = new();
+
     private UserService CreateService() => new(_dataContext.Object);
 }

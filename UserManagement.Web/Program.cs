@@ -7,14 +7,10 @@ using Westwind.AspNetCore.Markdown;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
-builder.Logging.AddDatabaseLogger( options => options.MinLevel = LogLevel.Debug);
+builder.Logging.AddDatabaseLogger(options => options.MinLevel = LogLevel.Debug);
 
 // Add services to the container.
-builder.Services
-    .AddDataAccess()
-    .AddDomainServices()
-    .AddMarkdown()
-    .AddControllersWithViews();
+builder.Services.AddDataAccess().AddDomainServices().AddMarkdown().AddControllersWithViews();
 
 var app = builder.Build();
 

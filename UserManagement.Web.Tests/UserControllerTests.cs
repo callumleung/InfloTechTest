@@ -24,19 +24,23 @@ public class UserControllerTests
         var result = await controller.List(null);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserViewModel
-        {
-            Id = u.Id,
-            Forename = u.Forename,
-            Surname = u.Surname,
-            Email = u.Email,
-            IsActive = u.IsActive,
-            DateOfBirth = u.DateOfBirth.ToShortDateString()
-        }).ToList();
+        var usersOutput = users
+            .Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Forename = u.Forename,
+                Surname = u.Surname,
+                Email = u.Email,
+                IsActive = u.IsActive,
+                DateOfBirth = u.DateOfBirth.ToShortDateString(),
+            })
+            .ToList();
 
-        result.Model
-            .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(usersOutput);
+        result
+            .Model.Should()
+            .BeOfType<UserListViewModel>()
+            .Which.Items.Should()
+            .BeEquivalentTo(usersOutput);
     }
 
     [Fact]
@@ -50,19 +54,23 @@ public class UserControllerTests
         var result = await controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserViewModel
-        {
-            Id = u.Id,
-            Forename = u.Forename,
-            Surname = u.Surname,
-            Email = u.Email,
-            IsActive = u.IsActive,
-            DateOfBirth = u.DateOfBirth.ToShortDateString()
-        }).ToList();
+        var usersOutput = users
+            .Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Forename = u.Forename,
+                Surname = u.Surname,
+                Email = u.Email,
+                IsActive = u.IsActive,
+                DateOfBirth = u.DateOfBirth.ToShortDateString(),
+            })
+            .ToList();
 
-        result.Model
-            .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(usersOutput);
+        result
+            .Model.Should()
+            .BeOfType<UserListViewModel>()
+            .Which.Items.Should()
+            .BeEquivalentTo(usersOutput);
     }
 
     [Fact]
@@ -76,19 +84,23 @@ public class UserControllerTests
         var result = await controller.List(true);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        var usersOutput = users.Select(u => new UserViewModel
-        {
-            Id = u.Id,
-            Forename = u.Forename,
-            Surname = u.Surname,
-            Email = u.Email,
-            IsActive = u.IsActive,
-            DateOfBirth = u.DateOfBirth.ToShortDateString()
-        }).ToList();
+        var usersOutput = users
+            .Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Forename = u.Forename,
+                Surname = u.Surname,
+                Email = u.Email,
+                IsActive = u.IsActive,
+                DateOfBirth = u.DateOfBirth.ToShortDateString(),
+            })
+            .ToList();
 
-        result.Model
-            .Should().BeOfType<UserListViewModel>()
-            .Which.Items.Should().BeEquivalentTo(usersOutput);
+        result
+            .Model.Should()
+            .BeOfType<UserListViewModel>()
+            .Which.Items.Should()
+            .BeEquivalentTo(usersOutput);
     }
 
     [Fact]
@@ -102,19 +114,26 @@ public class UserControllerTests
             Forename = "Johnny",
             Surname = "User",
             Email = "test@email.com",
-            DateOfBirth = new DateTime(1990, 1, 1)
+            DateOfBirth = new DateTime(1990, 1, 1),
         };
 
         // Act: Invokes the method under test with the arranged parameters.
         var result = await controller.AddUser(addUser);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        _userService.Verify(s => s.AddUser(It.Is<User>(u =>
-            u.Forename == addUser.Forename &&
-            u.Surname == addUser.Surname &&
-            u.Email == addUser.Email &&
-            u.IsActive &&
-            u.DateOfBirth == addUser.DateOfBirth)), Times.Once);
+        _userService.Verify(
+            s =>
+                s.AddUser(
+                    It.Is<User>(u =>
+                        u.Forename == addUser.Forename
+                        && u.Surname == addUser.Surname
+                        && u.Email == addUser.Email
+                        && u.IsActive
+                        && u.DateOfBirth == addUser.DateOfBirth
+                    )
+                ),
+            Times.Once
+        );
     }
 
     [Fact]
@@ -127,7 +146,7 @@ public class UserControllerTests
             Forename = "Johnny",
             Surname = "User",
             Email = "invalid-email", // Invalid email to trigger model state error
-            DateOfBirth = new DateTime(1990, 1, 1)
+            DateOfBirth = new DateTime(1990, 1, 1),
         };
         controller.ModelState.AddModelError("Email", "Invalid email format");
 
@@ -135,8 +154,7 @@ public class UserControllerTests
         var result = await controller.AddUser(addUser);
 
         // Assert: Verifies that the action of the method under test behaves as expected.
-        result.Should().BeOfType<ViewResult>()
-            .Which.Model.Should().Be(addUser);
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(addUser);
     }
 
     //TODO: Add tests for the AddUser/EditUser methods to cover all validation scenarios.
@@ -156,8 +174,13 @@ public class UserControllerTests
         _userService.Verify(s => s.DeleteUser(It.Is<User>(u => u.Id == user.Id)), Times.Once);
     }
 
-
-    private List<User> SetupUsers(string forename = "Johnny", string surname = "User", string email = "juser@example.com", bool isActive = true, DateTime dateOfBirth = default)
+    private List<User> SetupUsers(
+        string forename = "Johnny",
+        string surname = "User",
+        string email = "juser@example.com",
+        bool isActive = true,
+        DateTime dateOfBirth = default
+    )
     {
         var users = new List<User>
         {
@@ -167,17 +190,13 @@ public class UserControllerTests
                 Surname = surname,
                 Email = email,
                 IsActive = isActive,
-                DateOfBirth = dateOfBirth
-            }
+                DateOfBirth = dateOfBirth,
+            },
         };
 
-        _userService
-            .Setup(s => s.GetAll())
-            .ReturnsAsync(users);
+        _userService.Setup(s => s.GetAll()).ReturnsAsync(users);
 
-        _userService
-            .Setup(s => s.FilterByActive(It.IsAny<bool>()))
-            .ReturnsAsync(users);
+        _userService.Setup(s => s.FilterByActive(It.IsAny<bool>())).ReturnsAsync(users);
 
         _userService
             .Setup(s => s.DeleteUser(It.IsAny<User>()))
@@ -189,13 +208,13 @@ public class UserControllerTests
 
         _userService
             .Setup(s => s.AddUser(It.IsAny<User>()))
-            .ReturnsAsync((User user) =>
-            {
-                user.Id = 20;
-                return user;
-            }
+            .ReturnsAsync(
+                (User user) =>
+                {
+                    user.Id = 20;
+                    return user;
+                }
             );
-
 
         return users;
     }
@@ -203,5 +222,7 @@ public class UserControllerTests
     private readonly Mock<IUserService> _userService = new();
     private readonly Mock<ILogService> _logService = new();
     private readonly Mock<ILogger<UsersController>> _logger = new();
-    private UsersController CreateController() => new(_userService.Object, _logService.Object, _logger.Object);
+
+    private UsersController CreateController() =>
+        new(_userService.Object, _logService.Object, _logger.Object);
 }

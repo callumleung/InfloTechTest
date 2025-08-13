@@ -9,27 +9,39 @@ using Microsoft.Extensions.Logging;
 using UserManagement.Data.Entities;
 
 namespace UserManagement.Data.Logging;
+
 internal class DatabaseLogger : ILogger
 {
     private readonly DatabaseLoggerOptions _options;
     private readonly IServiceProvider _serviceProvider;
     private readonly IExternalScopeProvider _scopeProvider;
 
-    public DatabaseLogger(DatabaseLoggerOptions options, IServiceProvider serviceProvider, IExternalScopeProvider scopeProvider)
+    public DatabaseLogger(
+        DatabaseLoggerOptions options,
+        IServiceProvider serviceProvider,
+        IExternalScopeProvider scopeProvider
+    )
     {
         _options = options;
         _serviceProvider = serviceProvider;
         _scopeProvider = scopeProvider;
     }
 
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => default!;
+    public IDisposable? BeginScope<TState>(TState state)
+        where TState : notnull => default!;
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel >= _options.MinLevel;   
+        return logLevel >= _options.MinLevel;
     }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public void Log<TState>(
+        LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter
+    )
     {
         if (!IsEnabled(logLevel))
         {
@@ -47,23 +59,26 @@ internal class DatabaseLogger : ILogger
         // Try to extract UserId and action from the scope
         long? userId = null;
         UserActions? userAction = null;
-        _scopeProvider.ForEachScope((scope, state) =>
-        {
-            if (scope is IEnumerable<KeyValuePair<string, object>> values)
+        _scopeProvider.ForEachScope(
+            (scope, state) =>
             {
-                var userIdEntry = values.FirstOrDefault(kv => kv.Key == "UserId");
-                if (userIdEntry.Value is long id)
+                if (scope is IEnumerable<KeyValuePair<string, object>> values)
                 {
-                    userId = id;
-                }
+                    var userIdEntry = values.FirstOrDefault(kv => kv.Key == "UserId");
+                    if (userIdEntry.Value is long id)
+                    {
+                        userId = id;
+                    }
 
-                var userActionEntry = values.FirstOrDefault(kv => kv.Key == "UserAction");
-                if (userActionEntry.Value is UserActions value)
-                {
-                    userAction = value;
+                    var userActionEntry = values.FirstOrDefault(kv => kv.Key == "UserAction");
+                    if (userActionEntry.Value is UserActions value)
+                    {
+                        userAction = value;
+                    }
                 }
-            }
-        }, state);
+            },
+            state
+        );
 
         var log = new Log
         {
@@ -73,7 +88,7 @@ internal class DatabaseLogger : ILogger
             Message = message,
             Exception = exception?.ToString(),
             Timestamp = DateTime.UtcNow,
-            UserId = userId
+            UserId = userId,
         };
 
         using (var scope = _serviceProvider.CreateScope())
@@ -81,5 +96,5 @@ internal class DatabaseLogger : ILogger
             var dataAccess = scope.ServiceProvider.GetRequiredService<IDataContext>();
             dataAccess.Create(log);
         }
-    }    
+    }
 }

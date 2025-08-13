@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace UserManagement.Data.Entities;
+
 public enum UserActions
 {
     AddUser = 1000,

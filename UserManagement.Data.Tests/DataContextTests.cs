@@ -16,7 +16,7 @@ public class DataContextTests
         {
             Forename = "Brand New",
             Surname = "User",
-            Email = "brandnewuser@example.com"
+            Email = "brandnewuser@example.com",
         };
         await context.Create(entity);
 
@@ -25,8 +25,10 @@ public class DataContextTests
 
         // Assert: Verifies that the action of the method under test behaves as expected.
         result
-            .Should().Contain(s => s.Email == entity.Email)
-            .Which.Should().BeEquivalentTo(entity);
+            .Should()
+            .Contain(s => s.Email == entity.Email)
+            .Which.Should()
+            .BeEquivalentTo(entity);
     }
 
     [Fact]
@@ -67,7 +69,7 @@ public class DataContextTests
             Forename = "inactive",
             Surname = "User",
             Email = "notActive@example.com",
-            IsActive = false
+            IsActive = false,
         };
         await context.Create(entity);
 
