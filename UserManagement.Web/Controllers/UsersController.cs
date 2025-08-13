@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using UserManagement.Data.Entities;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Services.Interfaces;
-using UserManagement.Web.Models.Logs;
 using UserManagement.Web.Models.Users;
 
 namespace UserManagement.WebMS.Controllers;
@@ -78,7 +78,17 @@ public class UsersController : Controller
         if (!ModelState.IsValid)
         {
             // TODO: preserve submitted data in the view model (template is currently not reading from model)
-            _logger.LogError("Model state is invalid for AddUserViewModel. {user}", addUser);
+            return View("AddUser", addUser);
+        }
+
+        try
+        {
+            ValidateUser(addUser);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Validation failed for AddUserViewModel.");
+            ModelState.AddModelError("DateOfBirth", e.Message);
             return View("AddUser", addUser);
         }
 
@@ -163,9 +173,20 @@ public class UsersController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var returnUser = UserViewModel.FromAddUserView(editUser);
-            returnUser.Id = id;
-            return View("EditUser", returnUser);
+            editUser.Id = id;
+            return View("EditUser", editUser);
+        }
+
+        try
+        {
+            ValidateUser(editUser);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Validation failed for AddUserViewModel.");
+            ModelState.AddModelError("DateOfBirth", e.Message);
+            editUser.Id = id;
+            return View("EditUser", editUser);
         }
 
         LogWithUserScope(
@@ -259,5 +280,28 @@ public class UsersController : Controller
         {
             _logger.Log(level, message, args);
         }
+    }
+
+    private void ValidateUser(AddUserViewModel user)
+    {
+        var errors = new List<Exception>();
+        if (user.DateOfBirth > DateTime.UtcNow.AddYears(-18))
+        {
+            errors.Add(new ArgumentException("User must be at least 18 years old"));
+        }
+        if (!Regex.IsMatch(user.Forename, @"^[a-zA-Z\s\-']+$"))
+        {
+            errors.Add(new ArgumentException("Forename", "Forename contains invalid characters."));
+        }
+        if (!Regex.IsMatch(user.Surname, @"^[a-zA-Z\s\-']+$"))
+        {
+            errors.Add(new ArgumentException("Surname", "Surname contains invalid characters."));
+        }
+
+        if (errors.Count > 0)
+        {
+            throw new AggregateException("User validation failed", errors);
+        }
+        // TODO: check for unique email address
     }
 }

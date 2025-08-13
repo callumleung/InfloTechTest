@@ -59,6 +59,7 @@ public class LogsController : Controller
                         EventId = log.EventId.Id,
                         UserAction = log.UserAction,
                         Message = log.Message,
+                        Exception = log.Exception,
                         Timestamp = log.Timestamp,
                         User = user,
                     };
