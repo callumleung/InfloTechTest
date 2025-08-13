@@ -5,7 +5,6 @@ namespace UserManagement.Web.Models.Users;
 
 public class AddUserViewModel
 {
-    //private string _defaultErrorMessage = "This Field is required and cannot be longer than 100 characters";
     public long Id { get; set; }
 
     [StringLength(100, MinimumLength = 2, ErrorMessage = "_defaultErrorMessage")]

@@ -30,7 +30,6 @@ public class UserViewModel
         };
     }
 
-    // Arguably UserViewModel and AddUserViewModel should just be a single model
     public static UserViewModel FromAddUserView(AddUserViewModel user)
     {
         return new UserViewModel

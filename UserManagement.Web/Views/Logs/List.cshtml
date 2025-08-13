@@ -6,6 +6,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Timestamp</th>
                 <th>Level</th>
                 <th>Message</th>
@@ -16,12 +17,13 @@
             {
                 var log = Model.Logs[i];
                 <tr class="log-row" data-details-id="details-@i" >
+                    <td>Id: @log.Id</td>
                     <td>@log.Timestamp</td>
                     <td>@log.LogLevel</td>
                     <td>@log.Message</td>
                 </tr>
                 <tr id="details-@i" class="log-details-row">
-                    <td colspan="3" >
+                    <td colspan="4" >
                         <div class="log-details">
                             <span>Action: @log.UserAction</span>
                             <span>EventId: @log.EventId </span>
